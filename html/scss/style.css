@@ -1,0 +1,211 @@
+@import url("https://fonts.googleapis.com/css2?family=Open+Sans&display=swap");
+* {
+  margin: 0;
+  padding: 0;
+  font-family: "Open Sans", sans-serif;
+}
+
+.time-table {
+  width: 1920px;
+  margin: 2.5rem 1rem;
+  background-color: #ffff009c;
+  padding: 1rem;
+}
+
+.time-table .thead {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  height: 4rem;
+  border: 1px solid black;
+}
+
+.time-table .thead .tcell {
+  width: 14.28571%;
+  height: 3rem;
+  margin: 0.5rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: burlywood;
+  border: 1px solid red;
+}
+
+.time-table .row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+  height: 10rem;
+  border: 1px solid black;
+}
+
+.time-table .row .cell {
+  width: 14.28571%;
+  height: 9rem;
+  margin: 0.5rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  background-color: burlywood;
+  border: 1px solid red;
+}
+
+.time-table .row .cell .cell-form {
+  font-size: 0.8rem;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  width: 100%;
+}
+
+.time-table .row .cell .cell-form .form-ele {
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  margin: 1.5px;
+  height: 2rem;
+  padding-top: 6px;
+}
+
+.time-table .row .cell .cell-form .form-ele .inp {
+  width: 8rem;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+  padding: 0 0.25rem;
+}
+
+.time-table .row .cell .cell-form .form-ele .btn {
+  padding: 0rem 0.4rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+  margin: 0 1rem;
+}
+
+.time-table .row .cell .disp-data {
+  margin: 5px;
+  border: 1px solid whitesmoke;
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.time-table .row .cell .disp-dataCl {
+  margin: 2.5px;
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.time-table .row .cell .disp-dataCl .btn {
+  padding: 0rem 0.3rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+}
+
+.time-table .row .cell .disp-dataCl2 {
+  margin: 1.5px;
+  border-radius: 3px;
+  padding: 1px 5px;
+}
+
+.time-table .row .cell .disp-dataCl2 .btn {
+  padding: 0rem 0.75rem;
+  border-radius: 5px;
+  font-size: 0.75rem;
+}
+
+body {
+  background-color: #b5f5f0;
+}
+
+body header {
+  width: 100vw;
+  min-width: 1000px;
+  height: 2.5rem;
+  text-align: center;
+  font-size: 2rem;
+  font-weight: bold;
+  padding: 7.5px;
+  position: fixed;
+  background-color: #b5f5f0;
+  z-index: 1;
+}
+
+body .tp {
+  padding-top: 1rem;
+  margin-bottom: 2rem;
+}
+
+body .tp a {
+  font-size: 1rem;
+  margin: 0 1rem;
+  position: fixed;
+  z-index: 2;
+  text-decoration: none;
+  font-size: 1.25rem;
+  font-weight: bold;
+  color: #8a1414;
+  border: 1px solid #8a1414;
+  border-radius: 5px;
+  padding: 0 2.5px;
+}
+
+.mpx {
+  margin: 0 14px 0 0;
+}
+
+.mpx2 {
+  margin: 0 5.5px 0 0;
+}
+
+.num {
+  font-size: 2rem;
+}
+
+button {
+  cursor: pointer;
+}
+/*# sourceMappingURL=style.css.map */
