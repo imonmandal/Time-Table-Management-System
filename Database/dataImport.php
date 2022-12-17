@@ -46,24 +46,18 @@ class dataImport
             $error_chars = array("`", "'", '"', "#", "^");
             for ($row = 1; $row < count($sheetData); $row++) { // fetch row (indexing starts from 0)
                 $data = "";
-                // for ($col = 0; $col < count($sheetData[$row]) - 1; $col++) {
-                for ($col = 0; $col < $cols - 1; $col++) {
+                // for ($col = 0; $col < count($sheetData[$row]); $col++) {
+                for ($col = 0; $col < $cols; $col++) {
                     $d = $sheetData[$row][$col];
                     $d = $this->replace_error_chars($error_chars, $d);
                     if (strlen($d) == 0) {
-                        $data = $data . "NULL" . ", ";
+                        $data = $data . "NULL" . ", "; // if null then don't add inverted commas
                     } else {
                         $data = $data . "'" . $d . "'" . ", ";
                     }
                 }
-                // $d2 = $sheetData[$row][count($sheetData[$row]) - 1];
-                $d2 = $sheetData[$row][$cols - 1];
-                $d2 = $this->replace_error_chars($error_chars, $d2);
-                if (strlen($d2) == 0) {
-                    $data = $data . "NULL";
-                } else {
-                    $data = $data . "'" . $d2 . "'";
-                }
+                $data = substr($data, 0, strlen($data) - 2); // to remove the trailing comma -> ", "
+
                 $columns = implode('`, `', array_values($column));
                 $columns = "`" . $columns . "`";
 
