@@ -16,6 +16,14 @@ class dataImport
         $this->db = $db;
     }
 
+    public function replace_error_chars($arr, $str)
+    {
+        foreach ($arr as $c) {
+            $str = str_replace($c, "", $str);
+        }
+        return $str;
+    }
+
     public function impData($file, $table, $column, $cols) // col->array of col name of table in db
     {   // cols->number of cols to take from xlsheet
         $arr_file = explode('.', $file['name']);
@@ -35,16 +43,13 @@ class dataImport
         // $sheetData = $spreadsheet->getActiveSheet()->toArray();
 
         if (!empty($sheetData)) {
+            $error_chars = array("`", "'", '"', "#", "^");
             for ($row = 1; $row < count($sheetData); $row++) { // fetch row (indexing starts from 0)
                 $data = "";
                 // for ($col = 0; $col < count($sheetData[$row]) - 1; $col++) {
                 for ($col = 0; $col < $cols - 1; $col++) {
                     $d = $sheetData[$row][$col];
-                    $d = str_replace("`", "", $d); // replace backtick
-                    $d = str_replace("'", "", $d); // replace quotes
-                    $d = str_replace('"', '', $d);
-                    $d = str_replace("#", "", $d); // replace #
-                    $d = str_replace("^", "", $d); // replace ^
+                    $d = $this->replace_error_chars($error_chars, $d);
                     if (strlen($d) == 0) {
                         $data = $data . "NULL" . ", ";
                     } else {
@@ -53,11 +58,7 @@ class dataImport
                 }
                 // $d2 = $sheetData[$row][count($sheetData[$row]) - 1];
                 $d2 = $sheetData[$row][$cols - 1];
-                $d2 = str_replace("`", "", $d2); // replace backtick
-                $d2 = str_replace("'", "", $d2); // replace quotes
-                $d2 = str_replace('"', '', $d2);
-                $d2 = str_replace("#", "", $d2); // replace #
-                $d2 = str_replace("^", "", $d2); // replace ^
+                $d2 = $this->replace_error_chars($error_chars, $d2);
                 if (strlen($d2) == 0) {
                     $data = $data . "NULL";
                 } else {
