@@ -1,133 +1,133 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+require_once("Database/DBController.php");
+require_once("Database/time_table.php");
 
-<head>
-  <?php
+$db = new DBController();
+$tt = new time_table($db);
 
-  require_once("Database/DBController.php");
-  require_once("Database/time_table.php");
+$class = 'TE1';
 
-  $db = new DBController();
-  $tt = new time_table($db);
-
-  $class = 'TE1';
-
-  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if (isset($_GET['class'])) {
-      $class  = $_GET['class-data'];
-      $f = $tt->doesTableExists($class);
-      if ($f == 0) {
-        $url = sprintf("Location: index.php?class-table-not-pres=%s", $class);
-        header($url);
-        exit();
-      }
-    }
-
-    if (isset($_GET['class-return'])) {
-      $class  = $_GET['class-return'];
-      $L = $_GET['clash-lec'];
-      $dy = $_GET['day'];
-      $s = sprintf('<script type="text/javascript">alert("Cannot enter lab data because class %s is having lecture on %s in lecture number %s");</script>', $class, $dy, $L);
-      echo $s;
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+  if (isset($_GET['class'])) {
+    $class  = $_GET['class-data'];
+    $f = $tt->doesTableExists($class);
+    if ($f == 0) {
+      $url = sprintf("Location: index.php?class-table-not-pres=%s", $class);
+      header($url);
+      exit();
     }
   }
 
-  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  if (isset($_GET['class-return'])) {
+    $class  = $_GET['class-return'];
+    $L = $_GET['clash-lec'];
+    $dy = $_GET['day'];
+    $s = sprintf('<script type="text/javascript">alert("Cannot enter lab data because class %s is having lecture on %s in lecture number %s");</script>', $class, $dy, $L);
+    echo $s;
+  }
+}
 
-    if (isset($_POST['enter-data'])) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-      $lec = $_POST['lec'];
-      $day = $_POST['day'];
-      $class = $_POST['class'];
-      $room = $_POST['room'];
-      $teacher = $_POST['teacher'];
-      $subject = $_POST['subject'];
+  if (isset($_POST['enter-data'])) {
 
-      $f1 = $tt->doesTableExists($teacher);
-      $f2 = $tt->doesTableExists($room);
+    $lec = $_POST['lec'];
+    $day = $_POST['day'];
+    $class = $_POST['class'];
+    $room = $_POST['room'];
+    $teacher = $_POST['teacher'];
+    $subject = $_POST['subject'];
 
-      if ($f1 == 0 && $f2 == 1) {
-        $s = sprintf('<script type="text/javascript">alert("Table of teacher %s is not there in database");</script>', $teacher);
+    $f1 = $tt->doesTableExists($teacher);
+    $f2 = $tt->doesTableExists($room);
+
+    if ($f1 == 0 && $f2 == 1) {
+      $s = sprintf('<script type="text/javascript">alert("Table of teacher %s is not there in database");</script>', $teacher);
+      echo $s;
+    } elseif ($f1 == 1 && $f2 == 0) {
+      $s = sprintf('<script type="text/javascript">alert("Table of room %s is not there in database");</script>', $room);
+      echo $s;
+    } elseif ($f1 == 0 && $f2 == 0) {
+      $s = sprintf('<script type="text/javascript">alert("Table of teacher %s and room %s are not there in database");</script>', $teacher, $room);
+      echo $s;
+    } else {
+
+      $t = 0; // teacher don't have another lec
+      $r = 0; // room is vacant
+
+      if (!$tt->isCellNull($teacher, 'Lecture_No', $lec, $day)) {
+        $t = 1;
+      }
+      if (!$tt->isCellNull($room, 'Lecture_No', $lec, $day)) {
+        $r = 1;
+      }
+
+      if ($t == 1 && $r == 0) {
+        $s = sprintf('<script type="text/javascript">alert("%s is having another lecture");</script>', $teacher);
         echo $s;
-      } elseif ($f1 == 1 && $f2 == 0) {
-        $s = sprintf('<script type="text/javascript">alert("Table of room %s is not there in database");</script>', $room);
+      } elseif ($t == 0 && $r == 1) {
+        $s = sprintf('<script type="text/javascript">alert("Room %s is already occupied");</script>', $room);
         echo $s;
-      } elseif ($f1 == 0 && $f2 == 0) {
-        $s = sprintf('<script type="text/javascript">alert("Table of teacher %s and room %s are not there in database");</script>', $teacher, $room);
+      } elseif ($t == 1 && $r == 1) {
+        $s = sprintf('<script type="text/javascript">alert("%s is having another lecture and Room %s is already occupied");</script>', $teacher, $room);
         echo $s;
       } else {
-
-        $t = 0; // teacher don't have another lec
-        $r = 0; // room is vacant
-
-        if (!$tt->isCellNull($teacher, 'Lecture_No', $lec, $day)) {
-          $t = 1;
-        }
-        if (!$tt->isCellNull($room, 'Lecture_No', $lec, $day)) {
-          $r = 1;
-        }
-
-        if ($t == 1 && $r == 0) {
-          $s = sprintf('<script type="text/javascript">alert("%s is having another lecture");</script>', $teacher);
-          echo $s;
-        } elseif ($t == 0 && $r == 1) {
-          $s = sprintf('<script type="text/javascript">alert("Room %s is already occupied");</script>', $room);
-          echo $s;
-        } elseif ($t == 1 && $r == 1) {
-          $s = sprintf('<script type="text/javascript">alert("%s is having another lecture and Room %s is already occupied");</script>', $teacher, $room);
+        $tt->getData("teacher", "TeacherName", $teacher, "MaxNoOfLec") ? $mxl = $tt->getData("teacher", "TeacherName", $teacher, "MaxNoOfLec") : $mxl =  100000;
+        if ($tt->noOfLec($teacher) >= $mxl) {
+          $s = sprintf('<script type="text/javascript">alert("No of lectures of teacher %s have reached the maximum limit");</script>', $teacher);
           echo $s;
         } else {
-          $tt->getData("teacher", "TeacherName", $teacher, "MaxNoOfLec") ? $mxl = $tt->getData("teacher", "TeacherName", $teacher, "MaxNoOfLec") : $mxl =  100000;
-          if ($tt->noOfLec($teacher) >= $mxl) {
-            $s = sprintf('<script type="text/javascript">alert("No of lectures of teacher %s have reached the maximum limit");</script>', $teacher);
-            echo $s;
-          } else {
-            $dataC = "lec^" . $teacher . "#" . $room . "#" . $subject;
-            $dataT = $class . "#" . $room . "#" . $subject;
-            $dataR = $class . "#" . $teacher . "#" . $subject;
+          $dataC = "lec^" . $teacher . "#" . $room . "#" . $subject;
+          $dataT = $class . "#" . $room . "#" . $subject;
+          $dataR = $class . "#" . $teacher . "#" . $subject;
 
-            // enter
-            $e1 = $tt->updateTable($class, 'Lecture_No', $lec, $day, $dataC);
-            $e2 = $tt->updateTable($teacher, 'Lecture_No', $lec, $day, $dataT);
-            $e3 = $tt->updateTable($room, 'Lecture_No', $lec, $day, $dataR);
+          // enter
+          $e1 = $tt->updateTable($class, 'Lecture_No', $lec, $day, $dataC);
+          $e2 = $tt->updateTable($teacher, 'Lecture_No', $lec, $day, $dataT);
+          $e3 = $tt->updateTable($room, 'Lecture_No', $lec, $day, $dataR);
 
-            if (!($e1 && $e2 && $e3)) {
-              echo '<script type="text/javascript">alert("Could not enter data due to some issues with database");</script>';
-              $tt->updateTable($class, 'Lecture_No', $lec, $day, "NULL");
-              $tt->updateTable($teacher, 'Lecture_No', $lec, $day, "NULL");
-              $tt->updateTable($room, 'Lecture_No', $lec, $day, "NULL");
-            }
+          if (!($e1 && $e2 && $e3)) {
+            echo '<script type="text/javascript">alert("Could not enter data due to some issues with database");</script>';
+            $tt->updateTable($class, 'Lecture_No', $lec, $day, "NULL");
+            $tt->updateTable($teacher, 'Lecture_No', $lec, $day, "NULL");
+            $tt->updateTable($room, 'Lecture_No', $lec, $day, "NULL");
           }
         }
       }
     }
+  }
 
-    if (isset($_POST['delete-data'])) {
+  if (isset($_POST['delete-data'])) {
 
-      $lec = $_POST['lec'];
-      $day = $_POST['day'];
-      $class = $_POST['class'];
-      $room = $_POST['room'];
-      $teacher = $_POST['teacher'];
+    $lec = $_POST['lec'];
+    $day = $_POST['day'];
+    $class = $_POST['class'];
+    $room = $_POST['room'];
+    $teacher = $_POST['teacher'];
 
-      $tt->getData($class, 'Lecture_No', $lec, $day) ? $backup_class_data = $tt->getData($class, 'Lecture_No', $lec, $day) : $backup_class_data = "NULL";
-      $tt->getData($teacher, 'Lecture_No', $lec, $day) ? $backup_teacher_data = $tt->getData($teacher, 'Lecture_No', $lec, $day) : $backup_teacher_data = "NULL";
-      $tt->getData($room, 'Lecture_No', $lec, $day) ? $backup_room_data = $tt->getData($room, 'Lecture_No', $lec, $day) : $backup_room_data = "NULL";
+    $tt->getData($class, 'Lecture_No', $lec, $day) ? $backup_class_data = $tt->getData($class, 'Lecture_No', $lec, $day) : $backup_class_data = "NULL";
+    $tt->getData($teacher, 'Lecture_No', $lec, $day) ? $backup_teacher_data = $tt->getData($teacher, 'Lecture_No', $lec, $day) : $backup_teacher_data = "NULL";
+    $tt->getData($room, 'Lecture_No', $lec, $day) ? $backup_room_data = $tt->getData($room, 'Lecture_No', $lec, $day) : $backup_room_data = "NULL";
 
-      $d1 = $tt->updateTable($class, 'Lecture_No', $lec, $day, 'NULL');
-      $d2 = $tt->updateTable($teacher, 'Lecture_No', $lec, $day, 'NULL');
-      $d3 = $tt->updateTable($room, 'Lecture_No', $lec, $day, 'NULL');
+    $d1 = $tt->updateTable($class, 'Lecture_No', $lec, $day, 'NULL');
+    $d2 = $tt->updateTable($teacher, 'Lecture_No', $lec, $day, 'NULL');
+    $d3 = $tt->updateTable($room, 'Lecture_No', $lec, $day, 'NULL');
 
-      if (!($d1 && $d2 && $d3)) {
-        echo '<script type="text/javascript">alert("Could not delete data due to some issues with database");</script>';
+    if (!($d1 && $d2 && $d3)) {
+      echo '<script type="text/javascript">alert("Could not delete data due to some issues with database");</script>';
 
-        $tt->updateTable($class, 'Lecture_No', $lec, $day, $backup_class_data);
-        $tt->updateTable($teacher, 'Lecture_No', $lec, $day, $backup_teacher_data);
-        $tt->updateTable($room, 'Lecture_No', $lec, $day, $backup_room_data);
-      }
+      $tt->updateTable($class, 'Lecture_No', $lec, $day, $backup_class_data);
+      $tt->updateTable($teacher, 'Lecture_No', $lec, $day, $backup_teacher_data);
+      $tt->updateTable($room, 'Lecture_No', $lec, $day, $backup_room_data);
     }
   }
-  ?>
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

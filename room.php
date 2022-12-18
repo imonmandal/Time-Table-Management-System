@@ -1,30 +1,29 @@
+<?php
+require_once("Database/DBController.php");
+require_once("Database/time_table.php");
+
+$db = new DBController();
+$tt = new time_table($db);
+
+$rm = '301';
+
+if ($_SERVER['REQUEST_METHOD'] == 'GET') {
+  if (isset($_GET['room'])) {
+    $rm  = $_GET['room-data'];
+    $f = $tt->doesTableExists($rm);
+    if ($f == 0) {
+      $url = sprintf("Location: index.php?room-table-not-pres=%s", $rm);
+      header($url);
+      exit();
+    }
+  }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-  <?php
-
-  require_once("Database/DBController.php");
-  require_once("Database/time_table.php");
-
-  $db = new DBController();
-  $tt = new time_table($db);
-
-  $rm = '301';
-
-  if ($_SERVER['REQUEST_METHOD'] == 'GET') {
-    if (isset($_GET['room'])) {
-      $rm  = $_GET['room-data'];
-      $f = $tt->doesTableExists($rm);
-      if ($f == 0) {
-        $url = sprintf("Location: index.php?room-table-not-pres=%s", $rm);
-        header($url);
-        exit();
-      }
-    }
-  }
-
-  ?>
   <meta charset="UTF-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />

@@ -1,5 +1,4 @@
 <?php
-
 require_once("Database/DBController.php");
 require_once("Database/time_table.php");
 

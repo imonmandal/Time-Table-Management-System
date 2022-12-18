@@ -202,7 +202,7 @@ class time_table
         $this->db->con->query($query_string);
     }
 
-    public function download($path)
+    public function downloadFromDatabase($path = ".")
     {
         $de = new dataExport();
 
