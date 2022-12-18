@@ -66,6 +66,20 @@
     if (isset($_GET['room-table-not-pres'])) {
       echo sprintf('<script type="text/javascript">alert("Table of room %s is not there in database");</script>', $_GET['room-table-not-pres']);
     }
+
+    if (isset($_GET['download'])) {
+
+      // $p = $_POST['path'];
+      // $p = str_replace("'", "", $p);
+      // $p = str_replace('"', '', $p);
+      $p = ".";
+      if (file_exists($p . "\\table_data_download")) {
+        echo '<script type="text/javascript">alert("This path already has folder table_data_download pls select another path or delete that folder");</script>';
+      } else {
+        $tt->download($p);
+        echo '<script type="text/javascript">alert("Data downloaded successfully");</script>';
+      }
+    }
   }
 
   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -87,19 +101,6 @@
       $n = $_POST['l'];
       $tt->createTables($cA, $tA, $rA, $sA, $n);
       echo '<script type="text/javascript">alert("Data entered successfully");</script>';
-    }
-
-    if (isset($_POST['download'])) {
-
-      $p = $_POST['path'];
-      $p = str_replace("'", "", $p);
-      $p = str_replace('"', '', $p);
-      if (file_exists($p . "\\table_data_download")) {
-        echo '<script type="text/javascript">alert("This path already has folder table_data_download pls select another path or delete that folder");</script>';
-      } else {
-        $tt->download($p);
-        echo '<script type="text/javascript">alert("Data downloaded successfully");</script>';
-      }
     }
   }
 
@@ -200,12 +201,12 @@
   </div>
 
   <div class="btm">
-    <form action="index.php" method="post">
-      <label>
+    <form action="index.php" method="get">
+      <!-- <label>
         Enter Download Path
         <input type="text" name="path" required>
-      </label>
-      <button type="submit" name="download" value="submit">Download</button>
+      </label> -->
+      <button type="submit" name="download" value="getData">Download</button>
     </form>
   </div>
 </body>

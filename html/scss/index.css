@@ -128,7 +128,7 @@ h1 {
   margin: 1rem;
 }
 
-.btm label {
+/* .btm label {
   font-size: 1.5rem;
 }
 
@@ -137,12 +137,12 @@ h1 {
   height: 1.25rem;
   padding: 0 0.75rem;
   border: 3px solid rgb(167, 166, 166);
-}
+} */
 
 .btm button {
-  font-size: 1rem;
+  font-size: 2.5rem;
   padding: 0 0.5rem;
-  border-radius: 2.5px;
+  border-radius: 7.5px;
 }
 
 button {
