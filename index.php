@@ -1,5 +1,4 @@
 <?php
-ob_start();
 function initDB()
 {
   // Database connection properties
@@ -139,7 +138,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       header('Content-Disposition: attachment; filename="' . basename($filename) . '"');
       header('Content-Length: ' . filesize($filename));
 
-      ob_flush();
       flush();
       readfile($filename);
       // delete zip file
@@ -166,7 +164,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $folder = './table_data_download';
   delete_folder($folder);
 }
-ob_end_flush();
 ?>
 
 <!DOCTYPE html>
