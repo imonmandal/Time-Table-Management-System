@@ -29,6 +29,7 @@ class time_table
 
             return $resultArray;
         }
+        return null;
     }
 
     // selcol -> select column
@@ -45,6 +46,7 @@ class time_table
                 return null;
             }
         }
+        return null;
     }
 
     public function isCellNull($table, $selCol, $selData, $checkDataColumn)
@@ -53,6 +55,7 @@ class time_table
             $data = $this->getData($table, $selCol, $selData, $checkDataColumn);
             return is_null($data);
         }
+        return null;
     }
 
     public function updateTable($table, $selCol, $selData, $upCol, $upData)
@@ -70,6 +73,7 @@ class time_table
             $result = $this->db->con->query($query_string);
             return $result;
         }
+        return null;
     }
 
     // uid-> update integer data where seldata and updata both are integers
@@ -80,6 +84,7 @@ class time_table
             $result = $this->db->con->query($query_string);
             return $result;
         }
+        return null;
     }
 
     public function noOfLec($table)
@@ -88,7 +93,7 @@ class time_table
         $week = array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
         $c = 0;
         for ($row = 0; $row < count($tD); $row++) {
-            for ($col = 0; $col < 6; $col++) {
+            for ($col = 0; $col < count($week); $col++) {
                 if ($tD[$row][$week[$col]]) {
                     $c++;
                 }
@@ -108,6 +113,7 @@ class time_table
                 return 0;
             }
         }
+        return null;
     }
 
     public function helperCT($table, $sizOfCell, $n)
