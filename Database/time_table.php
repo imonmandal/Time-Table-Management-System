@@ -138,25 +138,25 @@ class time_table
         $di->impData($sA, 'subject', array("SubjectName", "LabName"), 2);
 
         $cD = $this->getTableData('class');
-        foreach ($cD as $row) :
+        foreach ($cD as $row) {
             if ($row["ClassName"]) { // to avoid null values in excel sheet
                 $this->helperCT($row["ClassName"], 500, $n);
             }
-        endforeach;
+        }
 
         $tD = $this->getTableData('teacher');
-        foreach ($tD as $row) :
+        foreach ($tD as $row) {
             if ($row["TeacherName"]) {
                 $this->helperCT($row["TeacherName"], 250, $n);
             }
-        endforeach;
+        }
 
         $rD = $this->getTableData('room');
-        foreach ($rD as $row) :
+        foreach ($rD as $row) {
             if ($row["RoomNo"]) {
                 $this->helperCT($row["RoomNo"], 250, $n);
             }
-        endforeach;
+        }
 
         $this->uid('lec', 'sr_no', 1, 'lec', $n);
     }
@@ -170,29 +170,29 @@ class time_table
     public function clear()
     {
         $cD = $this->getTableData('class');
-        foreach ($cD as $row) :
+        foreach ($cD as $row) {
             if ($row["ClassName"]) {
                 $this->helperDT($row["ClassName"]);
             }
-        endforeach;
+        }
         $query_string = "TRUNCATE TABLE `class`;";
         $this->db->con->query($query_string);
 
         $tD = $this->getTableData('teacher');
-        foreach ($tD as $row) :
+        foreach ($tD as $row) {
             if ($row["TeacherName"]) {
                 $this->helperDT($row["TeacherName"]);
             }
-        endforeach;
+        }
         $query_string = "TRUNCATE TABLE `teacher`;";
         $this->db->con->query($query_string);
 
         $rD = $this->getTableData('room');
-        foreach ($rD as $row) :
+        foreach ($rD as $row) {
             if ($row["RoomNo"]) {
                 $this->helperDT($row["RoomNo"]);
             }
-        endforeach;
+        }
         $query_string = "TRUNCATE TABLE `room`;";
         $this->db->con->query($query_string);
 
@@ -218,18 +218,18 @@ class time_table
         mkdir($path . "\\table_data_download\\room");
 
         $cD = $this->getTableData('class');
-        foreach ($cD as $row) :
+        foreach ($cD as $row) {
             $de->expData($row["ClassName"], $this->getTableData($row["ClassName"]), $path . "\\table_data_download\\class");
-        endforeach;
+        }
 
         $tD = $this->getTableData('teacher');
-        foreach ($tD as $row) :
+        foreach ($tD as $row) {
             $de->expData($row["TeacherName"], $this->getTableData($row["TeacherName"]), $path . "\\table_data_download\\teacher");
-        endforeach;
+        }
 
         $rD = $this->getTableData('room');
-        foreach ($rD as $row) :
+        foreach ($rD as $row) {
             $de->expData($row["RoomNo"], $this->getTableData($row["RoomNo"]), $path . "\\table_data_download\\room");
-        endforeach;
+        }
     }
 }
