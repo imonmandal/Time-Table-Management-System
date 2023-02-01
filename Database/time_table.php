@@ -42,8 +42,6 @@ class time_table
             // fetch data of first row from object $data
             if ($item = mysqli_fetch_array($data, MYSQLI_ASSOC)) {
                 return $item[$getDataColumn];
-            } else {
-                return null;
             }
         }
         return null;
@@ -89,17 +87,20 @@ class time_table
 
     public function noOfLec($table)
     {
-        $tD = $this->getTableData($table);
-        $week = array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
-        $c = 0;
-        for ($row = 0; $row < count($tD); $row++) {
-            for ($col = 0; $col < count($week); $col++) {
-                if ($tD[$row][$week[$col]]) {
-                    $c++;
+        if ($this->db->con != null) {
+            $tD = $this->getTableData($table);
+            $week = array("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday");
+            $c = 0;
+            for ($row = 0; $row < count($tD); $row++) {
+                for ($col = 0; $col < count($week); $col++) {
+                    if ($tD[$row][$week[$col]]) {
+                        $c++;
+                    }
                 }
             }
+            return $c;
         }
-        return $c;
+        return null;
     }
 
     public function doesTableExists($table)
@@ -118,118 +119,136 @@ class time_table
 
     public function helperCT($table, $sizOfCell, $n)
     {
-        $query_string = "CREATE TABLE `{$table}` (`Lecture_No` varchar(5) PRIMARY KEY, `Monday` varchar($sizOfCell), `Tuesday` varchar($sizOfCell), `Wednesday` varchar($sizOfCell), `Thursday` varchar($sizOfCell), `Friday` varchar($sizOfCell), `Saturday` varchar($sizOfCell));";
-        $this->db->con->query($query_string);
-
-        $n = (int)$n;
-        for ($i = 1; $i <= $n; $i++) {
-            $query_string = "INSERT INTO `{$table}` (`Lecture_No`) VALUES ('{$i}');";
+        if ($this->db->con != null) {
+            $query_string = "CREATE TABLE `{$table}` (`Lecture_No` varchar(5) PRIMARY KEY, `Monday` varchar($sizOfCell), `Tuesday` varchar($sizOfCell), `Wednesday` varchar($sizOfCell), `Thursday` varchar($sizOfCell), `Friday` varchar($sizOfCell), `Saturday` varchar($sizOfCell));";
             $this->db->con->query($query_string);
+
+            $n = (int)$n;
+            for ($i = 1; $i <= $n; $i++) {
+                $query_string = "INSERT INTO `{$table}` (`Lecture_No`) VALUES ('{$i}');";
+                $this->db->con->query($query_string);
+            }
         }
+        return null;
     }
 
     public function createTables($cA, $tA, $rA, $sA, $n)
     {
-        $db = new DBController();
-        $di = new dataImport($db);
-        $di->impData($cA, 'class', array("ClassName"), 1);
-        $di->impData($tA, 'teacher', array("TeacherName", "MaxNoOfLec"), 2);
-        $di->impData($rA, 'room', array("RoomNo"), 1);
-        $di->impData($sA, 'subject', array("SubjectName", "LabName"), 2);
+        if ($this->db->con != null) {
+            $db = new DBController();
+            $di = new dataImport($db);
+            $di->impData($cA, 'class', array("ClassName"), 1);
+            $di->impData($tA, 'teacher', array("TeacherName", "MaxNoOfLec"), 2);
+            $di->impData($rA, 'room', array("RoomNo"), 1);
+            $di->impData($sA, 'subject', array("SubjectName", "LabName"), 2);
 
-        $cD = $this->getTableData('class');
-        foreach ($cD as $row) {
-            if ($row["ClassName"]) { // to avoid null values in excel sheet
-                $this->helperCT($row["ClassName"], 500, $n);
+            $cD = $this->getTableData('class');
+            foreach ($cD as $row) {
+                if ($row["ClassName"]) { // to avoid null values in excel sheet
+                    $this->helperCT($row["ClassName"], 500, $n);
+                }
             }
-        }
 
-        $tD = $this->getTableData('teacher');
-        foreach ($tD as $row) {
-            if ($row["TeacherName"]) {
-                $this->helperCT($row["TeacherName"], 250, $n);
+            $tD = $this->getTableData('teacher');
+            foreach ($tD as $row) {
+                if ($row["TeacherName"]) {
+                    $this->helperCT($row["TeacherName"], 250, $n);
+                }
             }
-        }
 
-        $rD = $this->getTableData('room');
-        foreach ($rD as $row) {
-            if ($row["RoomNo"]) {
-                $this->helperCT($row["RoomNo"], 250, $n);
+            $rD = $this->getTableData('room');
+            foreach ($rD as $row) {
+                if ($row["RoomNo"]) {
+                    $this->helperCT($row["RoomNo"], 250, $n);
+                }
             }
-        }
 
-        $this->uid('lec', 'sr_no', 1, 'lec', $n);
+            $this->uid('lec', 'sr_no', 1, 'lec', $n);
+        }
+        return null;
     }
 
     public function helperDT($table)
     {
-        $query_string = "DROP TABLE IF EXISTS `{$table}`;";
-        $this->db->con->query($query_string);
+        if ($this->db->con != null) {
+            $query_string = "DROP TABLE IF EXISTS `{$table}`;";
+            $this->db->con->query($query_string);
+        }
+        return null;
     }
 
     public function clear()
     {
-        $cD = $this->getTableData('class');
-        foreach ($cD as $row) {
-            if ($row["ClassName"]) {
-                $this->helperDT($row["ClassName"]);
+        if ($this->db->con != null) {
+            $cD = $this->getTableData('class');
+            foreach ($cD as $row) {
+                if ($row["ClassName"]) {
+                    $this->helperDT($row["ClassName"]);
+                }
             }
-        }
-        $query_string = "TRUNCATE TABLE `class`;";
-        $this->db->con->query($query_string);
+            $query_string = "TRUNCATE TABLE `class`;";
+            $this->db->con->query($query_string);
 
-        $tD = $this->getTableData('teacher');
-        foreach ($tD as $row) {
-            if ($row["TeacherName"]) {
-                $this->helperDT($row["TeacherName"]);
+            $tD = $this->getTableData('teacher');
+            foreach ($tD as $row) {
+                if ($row["TeacherName"]) {
+                    $this->helperDT($row["TeacherName"]);
+                }
             }
-        }
-        $query_string = "TRUNCATE TABLE `teacher`;";
-        $this->db->con->query($query_string);
+            $query_string = "TRUNCATE TABLE `teacher`;";
+            $this->db->con->query($query_string);
 
-        $rD = $this->getTableData('room');
-        foreach ($rD as $row) {
-            if ($row["RoomNo"]) {
-                $this->helperDT($row["RoomNo"]);
+            $rD = $this->getTableData('room');
+            foreach ($rD as $row) {
+                if ($row["RoomNo"]) {
+                    $this->helperDT($row["RoomNo"]);
+                }
             }
+            $query_string = "TRUNCATE TABLE `room`;";
+            $this->db->con->query($query_string);
+
+            $query_string = "TRUNCATE TABLE `subject`;";
+            $this->db->con->query($query_string);
+
+            $this->uid('lec', 'sr_no', 1, 'lec', 'NULL');
         }
-        $query_string = "TRUNCATE TABLE `room`;";
-        $this->db->con->query($query_string);
-
-        $query_string = "TRUNCATE TABLE `subject`;";
-        $this->db->con->query($query_string);
-
-        $this->uid('lec', 'sr_no', 1, 'lec', 'NULL');
+        return null;
     }
 
     public function dropDatabase()
     {
-        $query_string = "DROP DATABASE IF EXISTS `time_table`;";
-        $this->db->con->query($query_string);
+        if ($this->db->con != null) {
+            $query_string = "DROP DATABASE IF EXISTS `time_table`;";
+            $this->db->con->query($query_string);
+        }
+        return null;
     }
 
     public function downloadFromDatabase($path = ".")
     {
-        $de = new dataExport();
+        if ($this->db->con != null) {
+            $de = new dataExport();
 
-        mkdir($path . "\\table_data_download");
-        mkdir($path . "\\table_data_download\\class");
-        mkdir($path . "\\table_data_download\\teacher");
-        mkdir($path . "\\table_data_download\\room");
+            mkdir($path . "\\table_data_download");
+            mkdir($path . "\\table_data_download\\class");
+            mkdir($path . "\\table_data_download\\teacher");
+            mkdir($path . "\\table_data_download\\room");
 
-        $cD = $this->getTableData('class');
-        foreach ($cD as $row) {
-            $de->expData($row["ClassName"], $this->getTableData($row["ClassName"]), $path . "\\table_data_download\\class");
+            $cD = $this->getTableData('class');
+            foreach ($cD as $row) {
+                $de->expData($row["ClassName"], $this->getTableData($row["ClassName"]), $path . "\\table_data_download\\class");
+            }
+
+            $tD = $this->getTableData('teacher');
+            foreach ($tD as $row) {
+                $de->expData($row["TeacherName"], $this->getTableData($row["TeacherName"]), $path . "\\table_data_download\\teacher");
+            }
+
+            $rD = $this->getTableData('room');
+            foreach ($rD as $row) {
+                $de->expData($row["RoomNo"], $this->getTableData($row["RoomNo"]), $path . "\\table_data_download\\room");
+            }
         }
-
-        $tD = $this->getTableData('teacher');
-        foreach ($tD as $row) {
-            $de->expData($row["TeacherName"], $this->getTableData($row["TeacherName"]), $path . "\\table_data_download\\teacher");
-        }
-
-        $rD = $this->getTableData('room');
-        foreach ($rD as $row) {
-            $de->expData($row["RoomNo"], $this->getTableData($row["RoomNo"]), $path . "\\table_data_download\\room");
-        }
+        return null;
     }
 }
