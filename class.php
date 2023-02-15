@@ -133,6 +133,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title><?php echo $class; ?> Time Table</title>
   <link rel="stylesheet" href="html/scss/style.css" />
+  <script>
+    // Save the scroll position to sessionStorage
+    function saveScrollPosition() {
+      const data = {
+        scrollX: window.scrollX,
+        scrollY: window.scrollY,
+      };
+      sessionStorage.setItem("scrollPos", JSON.stringify(data));
+    }
+
+    // Restore the scroll position from sessionStorage
+    function restoreScrollPosition() {
+      const data = JSON.parse(sessionStorage.getItem("scrollPos"));
+      if (data) {
+        window.scrollTo(data.scrollX, data.scrollY);
+      }
+      // Remove the data from sessionStorage
+      sessionStorage.removeItem("scrollPos");
+    }
+
+    // Call saveScrollPosition function beforeunload event
+    window.addEventListener("beforeunload", saveScrollPosition);
+
+    // Call restoreScrollPosition function on load event
+    window.addEventListener("load", restoreScrollPosition);
+  </script>
 </head>
 
 <body>
